@@ -1,31 +1,32 @@
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+
+# Cargar los datos
 df = pd.read_csv("vehicles_us.csv")
 
-hist_button = st.button('Construir histograma') # crear un botón
-if hist_button: # al hacer clic en el botón
-    # escribir un mensaje
+# Botón para el histograma
+if st.button('Construir histograma'):
     st.write('Creación de un histograma para el conjunto de datos de anuncios de venta de coches')
-            
-    # crear un histograma
     fig = px.histogram(df, x="odometer")
-        
-     # mostrar un gráfico Plotly interactivo
     st.plotly_chart(fig, use_container_width=True)
 
+# Botón para colores de vehículos más vendidos
+if st.button('Colores de Vehículos más vendidos'):
+    st.write('Creación de reporte: colores de vehículos más vendidos')
 
-hist_button = st.button('Colores de Vahiculos mas vendidos') # crear un botón
-if hist_button: # al hacer clic en el botón
-    # escribir un mensaje
-    st.write('Creación de reporte colores de vehiculos mas vendidos')
-    fig = px.bar(df_grouped_color, x="paint_color", y="price",
-             title="Autos Vendidos por color",
-             labels={"paint_color": "Color", "price": "Num Autos"},
-             color="price",
-             color_continuous_scale="Blues")
+    # Agrupar por color de pintura y contar número de coches
+    df_grouped_color = df['paint_color'].value_counts().reset_index()
+    df_grouped_color.columns = ['paint_color', 'count']
 
-# Ordenar por precio descendente (opcional)
-fig.update_layout(xaxis={'categoryorder':'total descending'})
+    # Crear gráfico de barras
+    fig = px.bar(df_grouped_color, x="paint_color", y="count",
+                 title="Autos vendidos por color",
+                 labels={"paint_color": "Color", "count": "Número de Autos"},
+                 color="count",
+                 color_continuous_scale="Blues")
 
-fig.show()
+    # Ordenar por total descendente
+    fig.update_layout(xaxis={'categoryorder': 'total descending'})
+
+    st.plotly_chart(fig, use_container_width=True)
